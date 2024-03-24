@@ -1,0 +1,10 @@
+Checks: 'bugprone-*,clang-diagnostic-*, cppcoreguidelines-*, performance-*, 
+  -bugprone-easily-swappable-parameters, -cppcoreguidelines-avoid-magic-numbers, 
+  -cppcoreguidelines-pro-bounds-constant-array-index, -cppcoreguidelines-pro-type-vararg,
+  -cppcoreguidelines-pro-bounds-pointer-arithmetic'
+CheckOptions:
+    - key: bugprone-argument-comment.StrictMode
+      value: 1
+    - key: bugprone-exception-escape.FunctionsThatShouldNotThrow
+      value: WinMain,SDL_main
+FormatStyle: 'file'
