@@ -17,7 +17,6 @@ Axes::Axes():
 
 void Axes::draw()
 {
-    static bool is_initialized { false };
     if (!is_initialized) {
         initialize();
         is_initialized = true;

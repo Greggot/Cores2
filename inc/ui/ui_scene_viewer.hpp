@@ -7,6 +7,7 @@
 #pragma once
 #include "ui/ui_viewport_converter.hpp"
 #include "visualization/vi_axes.hpp"
+#include "visualization/vi_mesh.hpp"
 #include <GL/glew.h>
 #include <thread>
 #include <wx/event.h>
@@ -31,6 +32,7 @@ private:
     wxGLContext* rendering_context;
     Viewport_converter viewport_converter;
     vi::Axes axes;
+    vi::Mesh_strip test_mesh;
 
     void render(wxPaintEvent&);
     void prepare_render();

@@ -19,11 +19,12 @@ enum class Uniform {
 };
 
 static const struct Uniforms {
-    std::array<std::string_view, 4> unifrom_names { "model", "view", "projection", "light_position" };
+    std::array<std::string_view, 4> unifrom_names { "model", "view", "projection", "color" };
     const char* operator[](Uniform uni) const { return std::data(unifrom_names[(int)uni]); }
 
     void pass(unsigned int shader, Uniform uni, const glm::mat4& value) const
     {
+        const auto name = operator[](uni);
         auto id = glGetUniformLocation(shader, operator[](uni));
         glUniformMatrix4fv(id, 1, GL_FALSE, glm::value_ptr(value));
     }

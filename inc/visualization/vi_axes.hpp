@@ -20,6 +20,8 @@ public:
 
 private:
     glm::mat4 model;
+    
+    bool is_initialized { false };
     void initialize();
 };
 

@@ -38,6 +38,7 @@ void Scene_viewer::render(wxPaintEvent& paint_event)
     update_viewport();
 
     axes.draw();
+    test_mesh.draw();
 
     finish_render();
 }
@@ -127,6 +128,9 @@ void Scene_viewer::compile_shaders()
         "shaders/axes_vertex.glsl",
         "shaders/axes_fragment.glsl");
     shader_holder.compiler().deallocate_log_buffer();
+
+    test_mesh.add_triangle({ { 0, 0, 0 }, { 0.5, 0, 0 }, { 0.5, 0.5, 0 } });
+    test_mesh.apply();
 }
 
 } // namespace ui
