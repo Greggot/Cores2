@@ -15,7 +15,8 @@ namespace vi {
 
 /// @brief Перечисление всевозможных применяемых шейдеров
 enum class Shader {
-    mesh,
+    mesh, /// Меш, у каждой вершины которого есть нормаль и цвет
+    axis, /// Трехцветные координатные оси
     size
 };
 
@@ -34,7 +35,8 @@ public:
         glUseProgram(programs.at(static_cast<size_t>(shader)));
     }
 
-    unsigned int at(Shader shader) const {
+    unsigned int at(Shader shader) const
+    {
         return programs.at(static_cast<size_t>(shader));
     }
 

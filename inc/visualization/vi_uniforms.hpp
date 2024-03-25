@@ -1,3 +1,9 @@
+/**
+ * @file
+ * @brief  Униформы - значения, что можно передавать в шейдеры
+ * @author https://github.com/Greggot/
+ */
+
 #pragma once
 #include <GL/glew.h>
 #include <array>

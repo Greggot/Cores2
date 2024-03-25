@@ -1,12 +1,13 @@
 /**
  * @file
- * @brief  Главное окно, содержащее внутри себя все панели, меню и пр.
+ * @brief Окно просмотра 3D моделей объектов сцены
  * @author https://github.com/Greggot/
  */
 
 #include "ui/ui_scene_viewer.hpp"
-#include "visualization/vi_mesh.hpp"
+#include "application/app_application.hpp"
 #include <wx/event.h>
+#include <wx/msgdlg.h>
 #include <wx/wx.h>
 
 namespace ui {
@@ -17,23 +18,26 @@ Scene_viewer::Scene_viewer(wxWindow* host):
     wxGLCanvas(host),
     rendering_context(new wxGLContext(this))
 {
-    // open_gl_init();
-    Bind(wxEVT_PAINT, &Scene_viewer::render, this);
+    render_init();
     Bind(wxEVT_SIZE, [this](wxSizeEvent&) {
         viewport_converter.update_widget_size(GetSize(), viewport_ratio);
     });
     start_update_thread();
 }
 
+Scene_viewer::~Scene_viewer()
+{
+    is_canvas_updating = false;
+    update_thread.join();
+}
+
 /// @brief Отрисовать все трехмерные модели, представления сборки
 void Scene_viewer::render(wxPaintEvent& paint_event)
 {
-    if (!is_open_gl_initialized)
-        open_gl_init();
     prepare_render();
     update_viewport();
 
-    test.draw();
+    axes.draw();
 
     finish_render();
 }
@@ -42,7 +46,7 @@ void Scene_viewer::start_update_thread()
 {
     update_thread = std::thread([this] {
         constexpr int delayms = 1000 / 60;
-        while (true) {
+        while (is_canvas_updating) {
             Refresh();
             std::this_thread::sleep_for(std::chrono::milliseconds(delayms));
         }
@@ -76,28 +80,53 @@ void Scene_viewer::update_viewport()
     glViewport(0, 0, viewport.x, viewport.y);
 }
 
+/// @brief Если контекст OpenGL не инициализирован, сделать так,
+/// чтобы на первый wxPaintEvent во всем приложении инициализировался
+/// контекст. Это нужно, чтобы не инициализировать его при создании каждого
+/// инстанса Scene_viewer.
+///
+/// Находится именно тут, потому что
+/// 1. Для инициализации нужно задать контекст рендера. Иначе пришлось бы
+///     показывать его снаружи.
+/// 2. Если предполагается, что будет несколько сцен, то нужно будет как-то
+///     брать самую первую (особенную) из них
+void Scene_viewer::render_init()
+{
+    if (app::application().is_open_gl_initialized()) {
+        Bind(wxEVT_PAINT, &Scene_viewer::render, this);
+        return;
+    }
+
+    Bind(wxEVT_PAINT, [this](const wxPaintEvent&) {
+        SetCurrent(*rendering_context);
+        const auto error = glewInit();
+        if (error != GLEW_OK && error != 4) {
+            wxMessageBox("Error: %s", glewGetErrorString(error));
+        } else {
+            compile_shaders();
+            Bind(wxEVT_PAINT, &Scene_viewer::render, this);
+            app::application().open_gl_initialization_complete();
+        }
+    });
+}
+
+/// @brief Собрать все шейдеры для глобального @ref vi::Shader_holder.
+/// Оно нахо
 void Scene_viewer::compile_shaders()
 {
+    auto& shader_holder = app::application().shader_holder();
     shader_holder.compiler().allocate_log_buffer(400);
     shader_holder.compiler().set_error_report_function([](std::string_view error) {
-        fprintf(stderr, "%s\n", std::data(error));
+        wxMessageBox(std::data(error));
     });
     shader_holder.allocate<vi::Shader::mesh>(
         "shaders/mesh_vertex.glsl",
         "shaders/mesh_fragment.glsl");
+
+    shader_holder.allocate<vi::Shader::axis>(
+        "shaders/axes_vertex.glsl",
+        "shaders/axes_fragment.glsl");
     shader_holder.compiler().deallocate_log_buffer();
-
-    test = vi::Drawable(shader_holder.at(vi::Shader::mesh));
-}
-
-void Scene_viewer::open_gl_init()
-{
-    SetCurrent(*rendering_context);
-    const auto error = glewInit();
-    if (error != GLEW_OK)
-        fprintf(stderr, "Error: %s\n", glewGetErrorString(error));
-    compile_shaders();
-    is_open_gl_initialized = true;
 }
 
 } // namespace ui

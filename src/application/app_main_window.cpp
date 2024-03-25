@@ -6,6 +6,8 @@
 
 #include "application/app_main_window.hpp"
 #include "ui/ui_scene_viewer.hpp"
+#include <wx/event.h>
+#include <wx/msgdlg.h>
 
 namespace app {
 
@@ -13,10 +15,8 @@ Main_window::Main_window(const wxString& title, const wxPoint& position, const w
     wxFrame(NULL, wxID_ANY, title, position, size),
     scene_viewer(new ui::Scene_viewer(this))
 {
+    SetBackgroundColour(wxColour { 0x60, 0x60, 0x60 });
     CreateStatusBar();
-    SetStatusText("Test window");
 }
-
-void Main_window::on_exit(wxCommandEvent& event) { Close(true); }
 
 } // namespace app

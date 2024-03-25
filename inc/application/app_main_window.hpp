@@ -15,7 +15,6 @@ public:
 
 private:
     ui::Scene_viewer* scene_viewer;
-    void on_exit(wxCommandEvent&);
 };
 
 } // namespace app

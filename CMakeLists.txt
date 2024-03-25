@@ -8,10 +8,13 @@ find_package(GLEW REQUIRED)
 find_package(glm REQUIRED)
 
 set(SOURCE_FILES
-    src/application/app_entry_point.cpp
+    src/application/app_application.cpp
     src/application/app_main_window.cpp
 
     src/ui/ui_scene_viewer.cpp
+
+    src/visualization/vi_axes.cpp
+    src/visualization/vi_drawable.cpp
 )
 file(COPY "shaders/" DESTINATION "${CMAKE_CURRENT_BINARY_DIR}/shaders/")
 
@@ -20,10 +23,9 @@ set_property(TARGET cores PROPERTY CXX_STANDARD 17)
 
 # LIBRARIES 
 target_link_libraries(cores ${wxWidgets_LIBRARIES})
-# target_link_libraries(cores ${OPENGL_LIBRARIES})
-# target_link_libraries(cores ${OPENGL_GLU_LIBRARY})
-# target_link_libraries(cores ${GLEW_LIBRARIES})
-target_link_libraries(cores GL GLU GLEW glut)
+target_link_libraries(cores ${OPENGL_LIBRARIES})
+target_link_libraries(cores ${OPENGL_GLU_LIBRARY})
+target_link_libraries(cores ${GLEW_LIBRARIES})
 target_link_libraries(cores glm::glm)
 
 # INCLUDES
