@@ -4,7 +4,6 @@
  * @author https://github.com/Greggot/
  */
 
-#pragma once
 #include "visualization/vi_drawable.hpp"
 #include "application/app_application.hpp"
 

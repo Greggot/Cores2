@@ -5,9 +5,10 @@
  */
 
 #pragma once
+#include "geometry/gm_mesh.hpp"
 #include "ui/ui_viewport_converter.hpp"
+#include "ux/ux_camera_controller.hpp"
 #include "visualization/vi_axes.hpp"
-#include "visualization/vi_mesh.hpp"
 #include <GL/glew.h>
 #include <thread>
 #include <wx/event.h>
@@ -30,8 +31,12 @@ public:
 private:
     wxGLContext* rendering_context;
     Viewport_converter viewport_converter;
+
+    /// @todo Выделить во view просмотрщика сцены - класс визуального отображения сцены
     vi::Axes axes;
-    vi::Mesh_strip test_mesh;
+    gm::Mesh mesh;
+
+    ux::Camera_controller camera_controller;
 
     void render(wxPaintEvent&);
     void prepare_render();

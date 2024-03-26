@@ -15,12 +15,9 @@ namespace vi {
 /// @todo Добавить презентер для осей и метод для задания матрицы модели
 class Axes : public Drawable {
 public:
-    Axes();
     void draw() override;
 
 private:
-    glm::mat4 model;
-    
     bool is_initialized { false };
     void initialize();
 };

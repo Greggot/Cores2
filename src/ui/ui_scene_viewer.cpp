@@ -6,8 +6,11 @@
 
 #include "ui/ui_scene_viewer.hpp"
 #include "application/app_application.hpp"
+#include "geometry/gm_mesh.hpp"
+#include "ux/ux_camera_controller.hpp"
 #include <wx/event.h>
 #include <wx/msgdlg.h>
+#include <wx/window.h>
 #include <wx/wx.h>
 
 namespace ui {
@@ -19,6 +22,21 @@ Scene_viewer::Scene_viewer(wxWindow* host):
     rendering_context(new wxGLContext(this))
 {
     render_init();
+    Bind(wxEVT_MOUSEWHEEL, [this](wxMouseEvent& event) {
+        const auto position = wxGetMousePosition();
+        const auto event_type = event.GetWheelRotation() > 0 ?
+            ux::Mouse_event::Event_type::scroll_up : 
+            ux::Mouse_event::Event_type::scroll_down;
+        ux::Mouse_event mouse_event {
+            ux::Mouse_event::Mouse_button::middle,
+            event_type,
+            position.x, position.y
+        };
+        camera_controller.handle(mouse_event);
+        axes.mvp() = camera_controller.view();
+        mesh.frame().set_view_projection(camera_controller.projection() * camera_controller.view());
+        mesh.apply_frame();
+    });
     Bind(wxEVT_SIZE, [this](wxSizeEvent&) {
         viewport_converter.update_widget_size(GetSize(), viewport_ratio);
     });
@@ -37,7 +55,7 @@ void Scene_viewer::render(wxPaintEvent& paint_event)
     prepare_render();
     update_viewport();
 
-    test_mesh.draw();
+    mesh.draw();
 
     update_axes_viewport();
     axes.draw();
@@ -138,8 +156,9 @@ void Scene_viewer::compile_shaders()
         "shaders/axes_fragment.glsl");
     shader_holder.compiler().deallocate_log_buffer();
 
-    test_mesh.add_triangle({ { 0, 0, 0 }, { 0.5, 0, 0 }, { 0.5, 0.5, 0 } });
-    test_mesh.apply();
+    mesh = gm::test_triangle();
+    // test_mesh.add_triangle({ { 0, 0, 0 }, { 0.5, 0, 0 }, { 0.5, 0.5, 0 } });
+    // test_mesh.apply();
 }
 
 } // namespace ui

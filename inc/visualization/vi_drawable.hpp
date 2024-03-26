@@ -5,6 +5,7 @@
  */
 
 #pragma once
+#include "geometry/gm_types.hpp"
 #include "visualization/vi_shader_holder.hpp"
 
 /// @brief Визуальные объекты, привязанные к контексту рендера (OpenGL)
@@ -16,12 +17,15 @@ class Drawable {
 public:
     Drawable() = default;
     Drawable(Drawable&&) = delete;
-    Drawable(const Drawable&) = delete;
+    Drawable(const Drawable&) = default;
     Drawable& operator=(Drawable&&) = delete;
-    Drawable& operator=(const Drawable&) = delete;
+    Drawable& operator=(const Drawable&) = default;
     virtual ~Drawable() = default;
 
     virtual void draw() = 0;
+
+    gm::matrix4& mvp() { return world_to_screen; }
+    const gm::matrix4& mvp() const { return world_to_screen; }
 
 protected:
     vi::Shader_holder& shader_holer();
@@ -35,6 +39,7 @@ protected:
 private:
     unsigned int shader { 0 };
     unsigned int vao { 0 };
+    gm::matrix4 world_to_screen { 1.0 };
 };
 
 } // namespace vi
