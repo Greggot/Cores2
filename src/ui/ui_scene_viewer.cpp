@@ -8,6 +8,7 @@
 #include "application/app_application.hpp"
 #include "geometry/gm_mesh.hpp"
 #include "ux/ux_camera_controller.hpp"
+#include "ux/ux_mouse_event.hpp"
 #include <wx/event.h>
 #include <wx/msgdlg.h>
 #include <wx/window.h>
@@ -22,23 +23,53 @@ Scene_viewer::Scene_viewer(wxWindow* host):
     rendering_context(new wxGLContext(this))
 {
     render_init();
+
     Bind(wxEVT_MOUSEWHEEL, [this](wxMouseEvent& event) {
-        const auto position = wxGetMousePosition();
-        const auto event_type = event.GetWheelRotation() > 0 ?
-            ux::Mouse_event::Event_type::scroll_up : 
-            ux::Mouse_event::Event_type::scroll_down;
-        ux::Mouse_event mouse_event {
-            ux::Mouse_event::Mouse_button::middle,
-            event_type,
-            position.x, position.y
-        };
-        camera_controller.handle(mouse_event);
-        axes.mvp() = camera_controller.view();
-        mesh.frame().set_view_projection(camera_controller.projection() * camera_controller.view());
-        mesh.apply_frame();
+        const auto event_type = event.GetWheelRotation() > 0 ? ux::Mouse_event::Event_type::scroll_up : ux::Mouse_event::Event_type::scroll_down;
+        camera_controller.handle({ ux::Mouse_event::Mouse_button::middle,
+            event_type });
+        update_view();
     });
+    Bind(wxEVT_MOTION, [this](wxMouseEvent& event) {
+        const auto position = wxGetMousePosition();
+        camera_controller.handle({ ux::Mouse_event::Mouse_button::left,
+            ux::Mouse_event::Event_type::motion,
+            { position.x, position.y } });
+        update_view();
+    });
+    Bind(wxEVT_LEFT_DOWN, [this](wxMouseEvent& event) {
+        const auto position = wxGetMousePosition();
+        camera_controller.handle({ ux::Mouse_event::Mouse_button::left,
+            ux::Mouse_event::Event_type::down,
+            { position.x, position.y } });
+        update_view();
+    });
+    Bind(wxEVT_LEFT_UP, [this](wxMouseEvent& event) {
+        const auto position = wxGetMousePosition();
+        camera_controller.handle({ ux::Mouse_event::Mouse_button::left,
+            ux::Mouse_event::Event_type::up,
+            { position.x, position.y } });
+        update_view();
+    });
+    Bind(wxEVT_MIDDLE_DOWN, [this](wxMouseEvent& event) {
+        const auto position = wxGetMousePosition();
+        camera_controller.handle({ ux::Mouse_event::Mouse_button::middle,
+            ux::Mouse_event::Event_type::down,
+            { position.x, position.y } });
+        update_view();
+    });
+    Bind(wxEVT_MIDDLE_UP, [this](wxMouseEvent& event) {
+        const auto position = wxGetMousePosition();
+        camera_controller.handle({ ux::Mouse_event::Mouse_button::middle,
+            ux::Mouse_event::Event_type::up,
+            { position.x, position.y } });
+        update_view();
+    });
+
     Bind(wxEVT_SIZE, [this](wxSizeEvent&) {
-        viewport_converter.update_widget_size(GetSize(), viewport_ratio);
+        const auto size { GetSize() };
+        viewport_converter.update_widget_size(size, viewport_ratio);
+        camera_controller.handle({ { size.x, size.y } });
     });
     start_update_thread();
 }
@@ -156,9 +187,19 @@ void Scene_viewer::compile_shaders()
         "shaders/axes_fragment.glsl");
     shader_holder.compiler().deallocate_log_buffer();
 
-    mesh = gm::test_triangle();
-    // test_mesh.add_triangle({ { 0, 0, 0 }, { 0.5, 0, 0 }, { 0.5, 0.5, 0 } });
-    // test_mesh.apply();
+    mesh = gm::test_triangle(100);
+}
+
+void Scene_viewer::update_view()
+{
+    auto rotation_matrix = camera_controller.view();
+    rotation_matrix[3][0] = 0;  
+    rotation_matrix[3][1] = 0;  
+    rotation_matrix[3][2] = 0;  
+    rotation_matrix[3] = {0, 0, 0, 1};  
+    axes.mvp() = rotation_matrix;
+    mesh.frame().set_view_projection(camera_controller.projection() * camera_controller.view());
+    mesh.apply_frame();
 }
 
 } // namespace ui

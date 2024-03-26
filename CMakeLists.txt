@@ -13,6 +13,8 @@ set(SOURCE_FILES
 
     src/ui/ui_scene_viewer.cpp
 
+    src/ux/ux_camera_controller.cpp
+
     src/visualization/vi_axes.cpp
     src/visualization/vi_drawable.cpp
 )

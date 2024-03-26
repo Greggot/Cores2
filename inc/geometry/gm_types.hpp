@@ -15,6 +15,14 @@
 /// Геометрические примитивы
 namespace gm {
 
+template <class Scalar_t = float>
+struct vector2 {
+    Scalar_t x;
+    Scalar_t y;
+    vector2(Scalar_t x = { 0 }, Scalar_t y = { 0 }):
+        x(x), y(y)
+    { }
+};
 using vector3 = glm::vec3;
 using vector4 = glm::vec4;
 using matrix4 = glm::mat4;
@@ -36,11 +44,13 @@ inline vector3 normalize(const vector3& vector)
     return glm::normalize(vector);
 }
 
-inline matrix4 rotate_radian(const matrix4& matrix, float angle, const vector3& axis) {
+inline matrix4 rotate_radian(const matrix4& matrix, float angle, const vector3& axis)
+{
     return glm::rotate(matrix, angle, axis);
 }
 
-inline matrix4 rotate_degree(const matrix4& matrix, float angle, const vector3& axis) {
+inline matrix4 rotate_degree(const matrix4& matrix, float angle, const vector3& axis)
+{
     return glm::rotate(matrix, glm::radians(angle), axis);
 }
 

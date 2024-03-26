@@ -43,10 +43,10 @@ private:
     vi::Mesh_strip mesh_strip;
 };
 
-static Mesh test_triangle()
+static Mesh test_triangle(float length)
 {
     Mesh mesh;
-    mesh.add_triangle({ { 0, 0, 0 }, { 0.5, 0, 0 }, { 0.5, 0.5, 0 } });
+    mesh.add_triangle({ { 0, 0, 0 }, { length, 0, 0 }, { length, length, 0 } });
     mesh.apply_vertices();
     return mesh;
 }

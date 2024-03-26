@@ -49,6 +49,8 @@ private:
     void render_init();
     void compile_shaders();
 
+    void update_view();
+
     bool is_canvas_updating { true };
     std::thread update_thread;
 };

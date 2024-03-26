@@ -19,7 +19,7 @@ struct Camera_model {
     struct Scene_box {
         float width { 1 };
         float height { 1 };
-        float depth { 100 };
+        float depth { 10000 };
     } scene_box;
 };
 
