@@ -37,8 +37,10 @@ void Scene_viewer::render(wxPaintEvent& paint_event)
     prepare_render();
     update_viewport();
 
-    axes.draw();
     test_mesh.draw();
+
+    update_axes_viewport();
+    axes.draw();
 
     finish_render();
 }
@@ -79,6 +81,13 @@ void Scene_viewer::update_viewport()
 {
     const auto viewport = viewport_converter.convert();
     glViewport(0, 0, viewport.x, viewport.y);
+}
+
+/// @brief Задать отдельный viewport для осей в углу экрана
+void Scene_viewer::update_axes_viewport()
+{
+    const auto viewport = viewport_converter.convert();
+    glViewport(0, 0, viewport.x / 5, viewport.y / 5);
 }
 
 /// @brief Если контекст OpenGL не инициализирован, сделать так,

@@ -27,7 +27,6 @@ public:
     Scene_viewer& operator=(Scene_viewer&&) = delete;
     ~Scene_viewer() final;
 
-
 private:
     wxGLContext* rendering_context;
     Viewport_converter viewport_converter;
@@ -37,8 +36,10 @@ private:
     void render(wxPaintEvent&);
     void prepare_render();
     void finish_render();
-    void update_viewport();
     void start_update_thread();
+
+    void update_viewport();
+    void update_axes_viewport();
 
     void render_init();
     void compile_shaders();
