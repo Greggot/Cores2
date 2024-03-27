@@ -31,4 +31,12 @@ struct Size_change_event {
     gm::vector2<int> size;
 };
 
+struct Key_event {
+    int key;
+    enum class Event_type {
+        up,
+        down
+    } type;
+};
+
 } // namespace ux

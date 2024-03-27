@@ -53,6 +53,17 @@ void Camera_controller::handle(const Size_change_event& event)
     update_matrices();
 }
 
+void Camera_controller::handle(const Key_event& event)
+{
+    switch(event.key) {
+        case 306:
+            rotate_mode = event.type == Key_event::Event_type::down;
+            break;
+        default:
+            break;
+    }
+}
+
 const gm::matrix4& Camera_controller::view() const
 {
     return model.view;

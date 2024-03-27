@@ -66,6 +66,21 @@ Scene_viewer::Scene_viewer(wxWindow* host):
         update_view();
     });
 
+    Bind(wxEVT_KEY_DOWN, [this](wxKeyEvent& event) {
+        camera_controller.handle(ux::Key_event {
+            event.GetKeyCode(),
+            ux::Key_event::Event_type::down,
+        });
+        update_view();
+    });
+    Bind(wxEVT_KEY_UP, [this](wxKeyEvent& event) {
+        camera_controller.handle(ux::Key_event {
+            event.GetKeyCode(),
+            ux::Key_event::Event_type::up,
+        });
+        update_view();
+    });
+
     Bind(wxEVT_SIZE, [this](wxSizeEvent&) {
         const auto size { GetSize() };
         viewport_converter.update_widget_size(size, viewport_ratio);
@@ -193,10 +208,10 @@ void Scene_viewer::compile_shaders()
 void Scene_viewer::update_view()
 {
     auto rotation_matrix = camera_controller.view();
-    rotation_matrix[3][0] = 0;  
-    rotation_matrix[3][1] = 0;  
-    rotation_matrix[3][2] = 0;  
-    rotation_matrix[3] = {0, 0, 0, 1};  
+    rotation_matrix[3][0] = 0;
+    rotation_matrix[3][1] = 0;
+    rotation_matrix[3][2] = 0;
+    rotation_matrix[3] = { 0, 0, 0, 1 };
     axes.mvp() = rotation_matrix;
     mesh.frame().set_view_projection(camera_controller.projection() * camera_controller.view());
     mesh.apply_frame();

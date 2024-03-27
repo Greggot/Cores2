@@ -19,6 +19,7 @@ public:
     Camera_controller();
     void handle(const Mouse_event&);
     void handle(const Size_change_event&);
+    void handle(const Key_event&);
 
     const gm::matrix4& view() const;
     const gm::matrix4& projection() const;
