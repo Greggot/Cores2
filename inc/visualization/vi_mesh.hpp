@@ -20,7 +20,7 @@ class Mesh_strip : public Drawable {
 public:
     Mesh_strip() = default;
 
-    void draw() override
+    void draw() const override 
     {
         if (vertices.empty())
             return;
@@ -45,6 +45,7 @@ public:
         if (vertices.empty())
             return;
         const auto* vertices_ptr = gm::data(vertices.front());
+        generate_vertex_array();
         generate_vertex_buffer(0, vertices_ptr, long(vertices.size() * sizeof(gm::vector3)));
     }
 

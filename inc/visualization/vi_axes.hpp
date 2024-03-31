@@ -15,10 +15,7 @@ namespace vi {
 /// @todo Добавить презентер для осей и метод для задания матрицы модели
 class Axes : public Drawable {
 public:
-    void draw() override;
-
-private:
-    bool is_initialized { false };
+    void draw() const override;
     void initialize();
 };
 

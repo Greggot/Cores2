@@ -202,7 +202,7 @@ void Scene_viewer::compile_shaders()
         "shaders/axes_fragment.glsl");
     shader_holder.compiler().deallocate_log_buffer();
 
-    mesh = gm::test_triangle(100);
+    axes.initialize();
 }
 
 void Scene_viewer::update_view()

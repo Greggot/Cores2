@@ -33,7 +33,7 @@ public:
     {
         mesh_strip.mvp() = local_frame.mvp();
     }
-    void draw()
+    void draw() const
     {
         mesh_strip.draw();
     }

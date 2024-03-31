@@ -30,7 +30,7 @@ public:
         programs.fill(0);
     }
 
-    void apply(Shader shader)
+    void apply(Shader shader) const
     {
         glUseProgram(programs.at(static_cast<size_t>(shader)));
     }

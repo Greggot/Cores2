@@ -22,7 +22,7 @@ public:
     Drawable& operator=(const Drawable&) = default;
     virtual ~Drawable() = default;
 
-    virtual void draw() = 0;
+    virtual void draw() const = 0;
 
     gm::matrix4& mvp() { return world_to_screen; }
     const gm::matrix4& mvp() const { return world_to_screen; }
@@ -34,7 +34,7 @@ protected:
     unsigned int generate_vertex_buffer(unsigned int layout, const float* data, long size);
     unsigned int generate_index_buffer(const unsigned int* indexes, long size);
     void generate_vertex_array();
-    void bind_vertex_array();
+    void bind_vertex_array() const;
 
 private:
     unsigned int shader { 0 };
