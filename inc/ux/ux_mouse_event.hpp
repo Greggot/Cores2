@@ -27,10 +27,13 @@ struct Mouse_event {
     gm::vector2<int> position;
 };
 
+/// @brief Событие изменения размеров окна для 
+/// обновления проекционной матрицы камеры.
 struct Size_change_event {
     gm::vector2<int> size;
 };
 
+/// @brief Событие нажатия клавиши
 struct Key_event {
     int key;
     enum class Event_type {
