@@ -36,10 +36,14 @@ void Camera_controller::handle(const Mouse_event& event)
             handle_motion(event);
             break;
         case ux::Mouse_event::Event_type::scroll_down:
-            model.view = gm::rotate_degree(model.view, 0.5f, up);
+            model.scene_box.height *= 1.1;
+            model.scene_box.width *= 1.1;
+            update_matrices();
             break;
         case ux::Mouse_event::Event_type::scroll_up:
-            model.view = gm::rotate_degree(model.view, -0.5f, up);
+            model.scene_box.height *= 0.9;
+            model.scene_box.width *= 0.9;
+            update_matrices();
             break;
         default:
             break;
@@ -86,7 +90,7 @@ void Camera_controller::handle_motion(const Mouse_event& event)
         handle_rotation({ -dx, dy });
     } else {
         const auto right = gm::normalize(gm::cross(target - eye, up));
-        const auto delta = (float(dx) * right) + (float(dy) * up);
+        const auto delta = (float(dx) * right / model.scene_box.width) + (float(dy) * up / model.scene_box.height);
         handle_translation(delta);
     }
     before = after;
