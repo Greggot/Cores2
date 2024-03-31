@@ -10,6 +10,7 @@
 #include "ux/ux_camera_controller.hpp"
 #include "visualization/vi_axes.hpp"
 #include <GL/glew.h>
+#include <functional>
 #include <thread>
 #include <wx/event.h>
 #include <wx/glcanvas.h>
@@ -28,13 +29,17 @@ public:
     Scene_viewer& operator=(Scene_viewer&&) = delete;
     ~Scene_viewer() final;
 
+    void add_mesh(gm::Mesh& mesh) {
+        meshes.push_back(mesh);
+    }
+
 private:
     wxGLContext* rendering_context;
     Viewport_converter viewport_converter;
 
     /// @todo Выделить во view просмотрщика сцены - класс визуального отображения сцены
     vi::Axes axes;
-    gm::Mesh mesh;
+    std::vector<std::reference_wrapper<gm::Mesh>> meshes;
 
     ux::Camera_controller camera_controller;
 

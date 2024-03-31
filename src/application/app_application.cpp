@@ -16,10 +16,18 @@ public:
     /// @brief Создание объекта главного окна @ref app::Main_window
     bool OnInit() override
     {
-        auto* main_window = new Main_window("Hello World", wxDefaultPosition, { 400, 300 });
+        main_window = new Main_window("Hello World", wxDefaultPosition, { 400, 300 });
         main_window->Show(true);
         return true;
     }
+
+    Tree_presenter& current_tree_presenter() final
+    {
+        return main_window->current_tree_presenter();
+    }
+
+private:
+    Main_window* main_window { nullptr };
 };
 
 } // namespace app

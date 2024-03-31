@@ -100,8 +100,8 @@ void Scene_viewer::render(wxPaintEvent& paint_event)
 {
     prepare_render();
     update_viewport();
-
-    mesh.draw();
+    for(const auto& mesh : meshes) 
+        mesh.get().draw();
 
     update_axes_viewport();
     axes.draw();
@@ -213,8 +213,11 @@ void Scene_viewer::update_view()
     rotation_matrix[3][2] = 0;
     rotation_matrix[3] = { 0, 0, 0, 1 };
     axes.mvp() = rotation_matrix;
-    mesh.frame().set_view_projection(camera_controller.projection() * camera_controller.view());
-    mesh.apply_frame();
+
+    for(auto& mesh : meshes) {
+        mesh.get().frame().set_view_projection(camera_controller.projection() * camera_controller.view());
+        mesh.get().apply_frame();
+    }
 }
 
 } // namespace ui
