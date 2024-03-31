@@ -11,6 +11,9 @@ set(SOURCE_FILES
     src/application/app_application.cpp
     src/application/app_main_window.cpp
 
+    src/import_export/ie_obj.cpp
+    src/import_export/ie_stl.cpp
+
     src/ui/ui_scene_viewer.cpp
 
     src/ux/ux_camera_controller.cpp

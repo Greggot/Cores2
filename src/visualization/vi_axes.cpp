@@ -10,13 +10,8 @@
 
 namespace vi {
 
-void Axes::draw()
+void Axes::draw() const
 {
-    if (!is_initialized) {
-        initialize();
-        is_initialized = true;
-    }
-
     glDisable(GL_DEPTH_TEST);
     bind_vertex_array();
 

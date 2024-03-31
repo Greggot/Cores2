@@ -42,7 +42,7 @@ void Drawable::generate_vertex_array()
     glGenVertexArrays(1, &vao);
     glBindVertexArray(vao);
 }
-void Drawable::bind_vertex_array()
+void Drawable::bind_vertex_array() const
 {
     glBindVertexArray(vao);
 }
